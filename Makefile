@@ -1,8 +1,22 @@
-hello.out: func.o main.o
-	gcc -o hello.out func.o main.o
-func.o: func.c
-	gcc -o func.o -c func.c
-main.o: main.c
-	gcc -o main.o -c main.c	
-clean :
-	rm *.o hello.out
+
+x := foo
+y := $(x)b
+x := new
+
+a = foo
+b = $(x)b
+a = new
+
+m := foo
+n := $(m)b
+m += $(n)
+
+.PHONY : test
+
+test:
+	@echo "x => $(x)"
+	@echo "y => $(y)"
+	@echo "a => $(a)"
+	@echo "b => $(b)"
+	@echo "m => $(m)"
+	@echo "n => $(n)"
