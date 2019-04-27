@@ -1,0 +1,17 @@
+CC := g++
+TARGET := hello_world
+
+$(TARGET) : func.o main.o
+	$(CC) -o $@ $^
+func.o: func.c
+	$(CC) -o $@ -c $<
+main.o: main.c
+	$(CC) -o $@ -c $<
+rebuild :clean all
+
+all : $(TARGET)
+
+
+clean:Force
+	rm *.o hello.out
+Force:
