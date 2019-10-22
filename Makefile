@@ -59,18 +59,87 @@
 # FORCE :
 
 
-.PHONY:clean rebuild all
+# .PHONY:clean rebuild all
 
-hello.out : main.o func.o
-	gcc -o hello.out main.o func.o
-main.o : main.c
-	gcc -o main.o -c main.c
-func.o : func.c
-	gcc -o func.o -c func.c
+# hello.out : main.o func.o
+# 	gcc -o hello.out main.o func.o
+# main.o : main.c
+# 	gcc -o main.o -c main.c
+# func.o : func.c
+# 	gcc -o func.o -c func.c
 
-rebuild : clean all
-all : hello.out
-clean : FORCE
-	rm -rf hello.out *.o
-FORCE: 
+# rebuild : clean all
+# all : hello.out
+# clean : FORCE
+# 	rm -rf hello.out *.o
+# FORCE: 
+
+
+#第四课，变量的不同的赋值方式
+#支持变量的概念，并且只代表文本数据
+#makefile的变量名规则
+#可以包含数字下划线
+#不能包含： # + “ ”等
+#变量名大小写敏感
+
+#第一小节
+# TARGET := helloword.out
+# CC := gcc
+
+# .PHONY:clean rebuild all
+
+# $(TARGET) : main.o func.o
+# 	$(CC) -o $(TARGET) main.o func.o
+# main.o : main.c
+# 	$(CC) -o main.o -c main.c
+# func.o : func.c
+# 	$(CC) -o func.o -c func.c
+
+# rebuild : clean all
+# all : $(TARGET)
+# clean : FORCE
+# 	rm -rf $(TARGET) *.o
+# FORCE: 
+
+#第二节makefile中变量的赋值方式
+#简单赋值（：=）
+#递归赋值（=）
+#条件赋值（？=）
+#追加赋值（+=）   不同的赋值方式意义不同
+
+#ex1
+# x := foo
+# y := $(x)b
+# x := new
+
+
+
+#ex2
+# x = foo
+# y = $(x)b
+# x = new
+# a = $(b)
+# b = $(c)
+# c = hello-makefile
+
+#ex3
+# x := foo
+# y := $(x)b
+# x ?= new
+
+#ex4
+x := foo
+y := $(x)b
+x += new
+
+
+#ex3
+.PHONY:test
+
+test:
+	@echo "x = > $(x)"
+	@echo "y = > $(y)"
+	@echo "a = > $(a)"
+	@echo "b = > $(b)"
+	@echo "c = > $(c)"
 
