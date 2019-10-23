@@ -128,18 +128,113 @@
 # x ?= new
 
 #ex4
-x := foo
-y := $(x)b
-x += new
+# x := foo
+# y := $(x)b
+# x += new
 
 
 #ex3
-.PHONY:test
+# .PHONY:test
 
+# test:
+# 	@echo "x = > $(x)"
+# 	@echo "y = > $(y)"
+# 	@echo "a = > $(a)"
+# 	@echo "b = > $(b)"
+# 	@echo "c = > $(c)"
+
+
+#第五课，预定义变量的使用
+#在makefile中存在一些预定义的变量
+# -自动变量
+# 	$@,当前规则中触发命令被执行的目标 
+# 	$^,当前规则中所有的依赖
+# 	$<，当前规则中第一个依赖
+# 	注意，“$“ 对应makefile有特殊含义
+# 	在bashshell有特殊含义，$@
+# .PHONY : all first senond third
+# all : first senond third
+# 	@echo "\$$@ => $@"
+# 	@echo "$$^ => $^"
+# 	@echo "$$< => $<"
+# first:
+# senond:
+# third:
+
+##################################
+# CC := gcc
+# TARGET := hello-world.out
+
+# $(TARGET) : main.o func.o
+# 	$(CC) -o $@ $^
+# main.o : main.c
+# 	$(CC) -o $@ -c $^
+# func.o : func.c
+# 	$(CC) -o $@ -c $^
+
+
+# .PHONY:clean rebuild all
+# rebuild : clean all
+# all : $(TARGET)
+# clean : FORCE
+# 	$(RM) -rf $(TARGET) *.o
+# FORCE: 
+##################################
+
+
+
+#########第二节########################
+# 特殊变量
+#   $(MAKE)
+##当前make解释器的文件名
+# 	$(MAKECMDGOALS)
+##命令行中指定的目标名（make的命令行参数）
+# $(MAKEFILE_LIST)
+##make所需处理的makefile文件列表
+##当前makefile中的文件名总是位于列表的最后
+##文件名之间以空格进行分割
+# 	$(MAKE_VERSION)
+
+# .PHONY : all out first second third
+# all out : first second third
+# 	@echo $(MAKE)
+# 	@echo "$(MAKECMDGOALS)"
+# 	@echo "$(MAKEFILE_LIST)"
+# first:
+# 	@echo "first"
+# second:
+# 	@echo "second"
+# third:
+# 	@echo "third"
+# test:
+# 	$(MAKE) first
+# 	$(MAKE) second
+# 	$(MAKE) third
+#######################################
+
+##############第三节####################
+.PHONY : all out test1 test2
+
+EDGARSHANG := shangzhiqiang
+all out : first second third
+	@echo $(MAKE)
+	@echo "$(MAKECMDGOALS)"
+	@echo "$(MAKEFILE_LIST)"
+	@echo $(MAKE_VERSION)
+	@echo $(CURDIR)
+	@echo "$(.VARIABLES)"
+test1:
+	@echo $(RM)
+first:
+	@echo "first"
+second:
+	@echo "second"
+third:
+	@echo "third"
 test:
-	@echo "x = > $(x)"
-	@echo "y = > $(y)"
-	@echo "a = > $(a)"
-	@echo "b = > $(b)"
-	@echo "c = > $(c)"
+	$(MAKE) first
+	$(MAKE) second
+	$(MAKE) third
+#######################################
+
 
