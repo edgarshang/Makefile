@@ -254,10 +254,10 @@
 #语法格式:$(var:a%b=x%y)或者${var:a%b=x%y}
 #替换表达式中不能有任何空格
 #make中支持使用${}对变量进行取值
-src := a1b.c a2b.c a3b.c
-obj := $(src:a%b.c=x%y.c)
-test1:
-	@echo "obj=> $(obj)"
+# src := a1b.c a2b.c a3b.c
+# obj := $(src:a%b.c=x%y.c)
+# test1:
+# 	@echo "obj=> $(obj)"
 # #规则中的模式替换
 # target：target-pattern：prereq-pattern：prereq
 # 	command1
@@ -275,4 +275,96 @@ test1:
 # main.o:main.c
 # 	gcc -o $@ -c $^
 ###########################################
+
+############第六课2小节###############################
+# src1 := a.cc b.cc c.cc
+# obj1 := $(src1:cc=o)
+# test1:
+# 	@echo "obj1=>$(obj1)"
+
+# src2 := a1sd1b.c a22b.c a33b.c
+# obj2 := $(src2:a%b.c=x%y)
+# test2:
+# 	@echo "obj2 => $(obj2)"
+####################################################
+# CC := g++
+# TARGET := hello-makefile.out
+# OBJS := func.o main.o const.o
+
+# $(TARGET) : $(OBJS)
+# 	$(CC) -o $@  $^
+# $(OBJS) : %.o : %.c
+# 	$(CC) -o $@ -c $^
+
+# .PHONY:clean rebuild all
+# rebuild : clean all
+# all : $(TARGET)
+# clean :
+# 	$(RM) -rf $(TARGET) *.o
+######################################################
+
+#################第六课3节，变量值的嵌套引用#####################################
+# hm:=hello makefile
+# test:
+# 	@echo "hm => $(hm)"
+#运行make时，在命令行定义变量
+#命令行变量默认覆盖makefile中的变量
+
+#override关键字
+#用于指定makefile中定义的变量不能被覆盖
+#变量的定义和赋值都需要使用override关键字
+# override hm:=hello makefile
+# test:
+# 	@echo "hm => $(hm)"
+
+#define 关键字
+#用于在makefile中定义多行变量
+#多行变量的定义从变量名开始到endef结束
+#可使用override关键字防止变量被覆盖
+#define定义的变量等价于使用 = 定义的变量
+
+# define foo
+# I'm fool!
+# endef
+
+# override define cmd
+# 	@echo "run cmd is ..."
+# 	@ls
+# endef
+#############################第六课4节，变量值的嵌套引用#############################################
+hm:=hello makefile
+override var:= override-test
+define foo
+I'm senseMaker
+endef
+
+override define cmd
+	@echo "run cmd is..."
+	@ls
+endef
+test:
+	@echo "hm => $(hm)"
+	@echo "var=> $(var)"
+	@echo "foo=> $(foo)"
+	$(cmd)
+
+
+
+
+#
+#
+
+#
+
+
+# result:= abc
+
+# .PHONY: all
+
+# ifeq (1,1)
+# result=$(shell ls *.c)
+# $(warning $(result))
+# endif
+
+
 
