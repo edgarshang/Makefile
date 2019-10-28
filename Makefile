@@ -332,22 +332,82 @@
 # 	@ls
 # endef
 #############################第六课4节，变量值的嵌套引用#############################################
-hm:=hello makefile
-override var:= override-test
-define foo
-I'm senseMaker
-endef
+# hm:=hello makefile
+# override var:= override-test
+# define foo
+# I'm senseMaker
+# endef
 
-override define cmd
-	@echo "run cmd is..."
-	@ls
-endef
-test:
-	@echo "hm => $(hm)"
-	@echo "var=> $(var)"
-	@echo "foo=> $(foo)"
-	$(cmd)
+# override define cmd
+# 	@echo "run cmd is..."
+# 	@ls
+# endef
+# test:
+# 	@echo "hm => $(hm)"
+# 	@echo "var=> $(var)"
+# 	@echo "foo=> $(foo)"
+# 	$(cmd)
 
+######第七课、全局变量、文件变量、局部变量
+############################第七课第一节，##########################################################
+##环境变量
+#makefile中能够直接使用环境变量的值
+#定义了同名变量，环境变量将被覆盖
+#运行make时指定-e选项，优先使用环境变量
+
+#为啥要在makefile中使用环境变量
+#变量在不同makefile之间的传递方式
+##直接在外部定义环境变量进行传递
+##使用export定义变量进行传递（定义临时环境变量）
+##定义make命令行变量进行传递（推荐）
+# JAVA_HOME := java home
+# JAVA_VERSION := java -version
+# var := D.T.Software
+# MAKE := make
+# test:
+# 	@echo "JAVA_HOME => $(JAVA_HOME)"
+# 	@echo "JAVA_VERSION => $(JAVA_VERSION)"
+# 	@$(MAKE) -f makefile2
+# 	@echo "hello => $(hello)"
+##########################第七课第三节#######################################################
+##目标变量
+###作用域只在指定目标及连带规则中
+#.target : name <assignment> value
+#.target : override name <assignment> value
+### var := D.T.Software
+### test : var := test-var  // var的作用域只是在test中
+### test:
+#      @echo "test:"
+#      @echo "var => $(var)"
+
+# var := D.T.Software
+# test : var := test_var
+
+# %e : override new := test-new #不希望在make中改变new的值
+
+# test:
+# 	@echo "test:"
+# 	@echo "new => $(var)"
+# rule:
+# 	@echo "rule:"
+# 	@echo "new => $(new)"
+
+#####################################
+var := D.T.Software
+test: var:= test-var
+
+%e:new := helloword
+
+test:another
+	@echo "test:"
+	@echo "var => $(var)"
+another:rule
+	@echo "another:"
+	@echo "var => $(var)"
+	@echo "new => $(new)"
+rule:
+	@echo "rule:"
+	@echo "new => $(new)"
 
 
 
