@@ -393,28 +393,92 @@
 # 	@echo "new => $(new)"
 
 #####################################
-var := D.T.Software
-test: var:= test-var
+# var := D.T.Software
+# test: var:= test-var
 
-%e:new := helloword
+# %e:new := helloword
 
-test:another
-	@echo "test:"
-	@echo "var => $(var)"
-another:rule
-	@echo "another:"
-	@echo "var => $(var)"
-	@echo "new => $(new)"
-rule:
-	@echo "rule:"
-	@echo "new => $(new)"
+# test:another
+# 	@echo "test:"
+# 	@echo "var => $(var)"
+# another:rule
+# 	@echo "another:"
+# 	@echo "var => $(var)"
+# 	@echo "new => $(new)"
+# rule:
+# 	@echo "rule:"
+# 	@echo "new => $(new)"
 
 
+###################第八课、条件判断语句#################################
+####第一节
+###makefile中支持条件判断语句
+#可以根据条件的值来决定make的执行
+#可以比较两个不同变量或者变量和常量值
+# // arg1和arg2之间不能有空格
+#  ifxxx(arg1,arg2)
+#  # for ture
+#  else
+#  #for false
+#  endif
+#
+###注意事项
+#条件判断语句只能控制make实际执行的语句，但是，不能控制规则中命令的执行过程
+#
+#常用形式
+##ifxxx (arg1,arg2)
+#其它合法形式
+#ifxxx "arg1" "arg2"
+#ifxxx "arg1" "arg2"
+#ifxxx "arg1" "arg2"
+#ifxxx "arg1" "arg2"
 
 #
+#ifeq 判断是否相等
+#ifneq 判断是否不相等
+#ifdef 判断变量是否有值
+#ifndef 判断变量是否没有值
 #
 
-#
+
+
+.PHONY:test
+
+var1 := A
+var2 := $(var1)
+var3 := 
+
+test:
+    ifeq ($(var1), $(var3))
+		@echo "var1 == var2"
+    else
+		@echo "var1 != var2"
+    endif
+
+    ifneq ($(var2),)
+		@echo "var2 is NOT empty"
+    else
+		@echo "var2 is empty"
+    endif
+
+    ifdef var2
+		@echo "var2 is NOT empty"
+    else 
+		@echo "var2 is empty"
+    endif
+
+    ifndef var3
+		@echo "var3 is empty"
+    else
+		@echo "var3 is not empty"
+    endif
+
+
+
+
+
+
+
 
 
 # result:= abc
