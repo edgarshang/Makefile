@@ -442,36 +442,62 @@
 
 
 
-.PHONY:test
+# .PHONY:test
 
-var1 := A
-var2 := $(var1)
-var3 := 
+# var1 := A
+# var2 := $(var1)
+# var3 := 
+
+# test:
+#     ifeq ($(var1), $(var3))
+# 		@echo "var1 == var2"
+#     else
+# 		@echo "var1 != var2"
+#     endif
+
+#     ifneq ($(var2),)
+# 		@echo "var2 is NOT empty"
+#     else
+# 		@echo "var2 is empty"
+#     endif
+
+#     ifdef var2
+# 		@echo "var2 is NOT empty"
+#     else 
+# 		@echo "var2 is empty"
+#     endif
+
+#     ifndef var3
+# 		@echo "var3 is empty"
+#     else
+# 		@echo "var3 is not empty"
+#     endif
+#####第二节
+#一些工程经验
+##条件判断语句之前可以有空格，但是不能有tab键
+##在条件语句中不要使用自动变量（（$@， $^, $<））
+##一条完整的条件语句必须位于同一个makefile中
+##条件判断类似C语言中的宏，预处理阶段有效，执行阶段无效
+##make在加载makefile时，
+####首先计算表达式的值（赋值方式不同，计算方式不同）
+####根据判断语句的表达式决定执行的内容
+
+var1 = 
+var2 = $(var1)
 
 test:
-    ifeq ($(var1), $(var3))
-		@echo "var1 == var2"
+    ifdef var1
+	@echo "var1 is defined"
     else
-		@echo "var1 != var2"
-    endif
-
-    ifneq ($(var2),)
-		@echo "var2 is NOT empty"
-    else
-		@echo "var2 is empty"
+	@echo "hello"
     endif
 
     ifdef var2
-		@echo "var2 is NOT empty"
-    else 
-		@echo "var2 is empty"
+	@echo "var2 is defined"
     endif
 
-    ifndef var3
-		@echo "var3 is empty"
-    else
-		@echo "var3 is not empty"
-    endif
+test1:
+
 
 
 
