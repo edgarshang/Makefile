@@ -482,21 +482,51 @@
 ####首先计算表达式的值（赋值方式不同，计算方式不同）
 ####根据判断语句的表达式决定执行的内容
 
-var1 = 
-var2 = $(var1)
+# var1 = 
+# var2 = $(var1)
 
+# test:
+#     ifdef var1
+# 	@echo "var1 is defined"
+#     else
+# 	@echo "hello"
+#     endif
+
+#     ifdef var2
+# 	@echo "var2 is defined"
+#     endif
+
+# test1:
+#########################第九课 函数定义及使用
+###########第一节
+#提供了一系列的函数供makefile调用
+#支持自定义函数
+#函数定义
+define func1
+	@echo "my name is $(0)"
+endef
+
+define func2
+	@echo "My name is $(0)"
+	@echo "Param=>$(1)"
+	@echo "Param=>$(2)"
+	@echo "Param=>$(3)"
+endef
+
+var := $(call func1)
+var1 := $(func1)
+
+#函数调用
 test:
-    ifdef var1
-	@echo "var1 is defined"
-    else
-	@echo "hello"
-    endif
+	@echo "var1 => $(var1)"
+	@echo "var => $(var)"
+	$(call func1)
+	$(call func2, edgarshang, love, you)
 
-    ifdef var2
-	@echo "var2 is defined"
-    endif
-
-test1:
+#自定义函数是一个多行变量
+#自定义函数是一个过程调用，没有任何的返回值
+#自定义函数用于定义函数集合，并应用于规则中
+#
 
 
 
