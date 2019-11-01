@@ -502,32 +502,69 @@
 #提供了一系列的函数供makefile调用
 #支持自定义函数
 #函数定义
-define func1
-	@echo "my name is $(0)"
-endef
+# define func1
+# 	@echo "my name is $(0)"
+# endef
 
-define func2
-	@echo "My name is $(0)"
-	@echo "Param=>$(1)"
-	@echo "Param=>$(2)"
-	@echo "Param=>$(3)"
-endef
+# define func2
+# 	@echo "My name is $(0)"
+# 	@echo "Param=>$(1)"
+# 	@echo "Param=>$(2)"
+# 	@echo "Param=>$(3)"
+# endef
 
-var := $(call func1)
-var1 := $(func1)
+# var := $(call func1)
+# var1 := $(func1)
 
-#函数调用
-test:
-	@echo "var1 => $(var1)"
-	@echo "var => $(var)"
-	$(call func1)
-	$(call func2, edgarshang, love, you)
+# #函数调用
+# test:
+# 	@echo "var1 => $(var1)"
+# 	@echo "var => $(var)"
+# 	$(call func1)
+# 	$(call func2, edgarshang, love, you)
 
 #自定义函数是一个多行变量
 #自定义函数是一个过程调用，没有任何的返回值
 #自定义函数用于定义函数集合，并应用于规则中
+####第二节
+###make解释器中的预定义函数
+#make的函数提供了处理文件名，变量和命令的参数
+#可以在需要的地方调用函数来处理指定的参数
+#函数的在调用的地方被替换为处理结果
+#预定义函数有返回值
+#预定义函数的调用
+#var:=$(func_name arg1, arg2, ....)
+# var:=$(abspath ./)
+# test:
+# 	@echo "var = $(var)"
+#为什么自定义和内置函数差异这么大
+#make函数中不支持真正意义上的自定义函数
+#自定义函数本质上是多行变量
+#自定义函数是call函数的实参，并且在call中被执行
+##函数剖析
 #
 
+.PHONY:test
+define func1
+	@echo "my name is $(0)"
+endef
+define func2
+	@echo "my name is $(0)"
+endef
+
+var1 := $(call func1)
+var2 := $(call func2)
+var3 := $(abspath ./)
+var4 := $(abspath test.cpp)
+var5 := $()
+#函数调用
+test:
+	$(func1)
+	$(call func1)
+	@echo "var1 => $(var1)"
+	@echo "var2 => $(var2)"
+	@echo "var3 => $(var3)"
+	@echo "var4 => $(var4)"
 
 
 
