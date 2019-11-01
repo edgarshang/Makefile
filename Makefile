@@ -574,14 +574,7 @@
 
 
 
-# result:= abc
 
-# .PHONY: all
-
-# ifeq (1,1)
-# result=$(shell ls *.c)
-# $(warning $(result))
-# endif
 
 
 
