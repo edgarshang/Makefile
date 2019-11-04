@@ -567,7 +567,34 @@
 # 	@echo "var4 => $(var4)"
 
 
+#####第十课，变量与函数的综合示列
+####第一节
+###自动生成target文件夹存放可执行文件
+###自动生成objs文件夹存放编译生成的目标文件（*.o）
+###支持调试版本的编译选项
+###考虑代码的扩展性
 
+##工具原料
+#$(wildcard _parttern)
+##获取当前工作目录中满足——parttern的文件或者目录列表
+#$(addprefix _prefix, _names)
+##给名字列表_names中每一个名字增加前缀_prefix
+##关键技巧
+##自动获取当前目录下的源文件列表（函数调用）
+#SRC := $(wildcard *.c)
+##根据源文件列表生成目标文件列表（变量的值替换）
+#OBJS := $(SRC:.c=.o)
+##对每一个目标文件列表路径前缀（函数调用）
+#OBJS := $(addprefix path/, $(OBJS))
+
+##规则中的模式替换（目录结构）
+#工作中目录存在func.c和main.c
+#%.o:%c
+##gcc -o $@ -c $^
+#func.o : func.c
+##gcc -o $@ -c $^
+#main.o : main.c
+##gcc -o $@ -c $^ 
 
 
 
