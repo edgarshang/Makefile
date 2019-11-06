@@ -598,6 +598,44 @@
 
 
 ####第二节2019.11.05
+# CC := gcc
+# MKDIR := mkdir
+# RM := rm -rf
+
+# DIR_OBJS := objs
+# DIR_TARGET := target
+
+# DIRS := $(DIR_OBJS) $(DIR_TARGET)
+# #TARGET := $(DIR_TARGET)/hello-makefile.out
+# TARGET := $(addprefix $(DIR_TARGET)/, helloword.out)
+# # main.c const.c func.c
+# SRCS := $(wildcard *.c)
+# # main.o const.o func.o
+# OBJS := $(SRCS:.c=.o)
+# #objs/main.o objs/const.o objs/func.o
+# OBJS := $(addprefix $(DIR_OBJS)/, $(OBJS))
+
+# .PHONY : rebuild clean all
+
+# $(TARGET) : $(DIRS) $(OBJS)
+# 	$(CC) -o $@ $(OBJS)
+# 	@echo "Target file ==> $@"
+# $(DIRS):
+# 	$(MKDIR) $@
+# #$(OBJS):$(DIR_OBJS)/%.o : %.c
+# $(DIR_OBJS)/%.o : %.c
+# 	$(CC) -o $@ -c $^
+# rebuild: clean all
+
+# all:$(TARGET)
+
+# clean:
+# 	$(RM) $(DIR_OBJS) $(DIR_TARGET)
+
+
+
+##第三节
+
 CC := gcc
 MKDIR := mkdir
 RM := rm -rf
@@ -624,22 +662,17 @@ $(DIRS):
 	$(MKDIR) $@
 #$(OBJS):$(DIR_OBJS)/%.o : %.c
 $(DIR_OBJS)/%.o : %.c
-	$(CC) -o $@ -c $^
+    ifeq ($(DEBUG),true)
+		$(CC) -o $@ -g -c $^
+    else
+		$(CC) -o $@ -c $^
+    endif
 rebuild: clean all
 
 all:$(TARGET)
 
 clean:
 	$(RM) $(DIR_OBJS) $(DIR_TARGET)
-
-# result:= abc
-
-# .PHONY: all
-
-# ifeq (1,1)
-# result=$(shell ls *.c)
-# $(warning $(result))
-# endif
 
 
 
