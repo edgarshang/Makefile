@@ -636,22 +636,22 @@
 
 ##第三节
 
-CC := gcc
-MKDIR := mkdir
-RM := rm -rf
+# CC := gcc
+# MKDIR := mkdir
+# RM := rm -rf
 
-DIR_OBJS := objs
-DIR_TARGET := target
+# DIR_OBJS := objs
+# DIR_TARGET := target
 
-DIRS := $(DIR_OBJS) $(DIR_TARGET)
-#TARGET := $(DIR_TARGET)/hello-makefile.out
-TARGET := $(addprefix $(DIR_TARGET)/, helloword.out)
-# main.c const.c func.c
-SRCS := $(wildcard *.c)
-# main.o const.o func.o
-OBJS := $(SRCS:.c=.o)
-#objs/main.o objs/const.o objs/func.o
-OBJS := $(addprefix $(DIR_OBJS)/, $(OBJS))
+# DIRS := $(DIR_OBJS) $(DIR_TARGET)
+# #TARGET := $(DIR_TARGET)/hello-makefile.out
+# TARGET := $(addprefix $(DIR_TARGET)/, helloword.out)
+# # main.c const.c func.c
+# SRCS := $(wildcard *.c)
+# # main.o const.o func.o
+# OBJS := $(SRCS:.c=.o)
+# #objs/main.o objs/const.o objs/func.o
+# OBJS := $(addprefix $(DIR_OBJS)/, $(OBJS))
 
 .PHONY : rebuild clean all
 
@@ -661,11 +661,11 @@ $(TARGET) : $(DIRS) $(OBJS)
 $(DIRS):
 	$(MKDIR) $@
 #$(OBJS):$(DIR_OBJS)/%.o : %.c
-$(DIR_OBJS)/%.o : %.c
+$(DIR_OBJS)/%.o : %.c func.h
     ifeq ($(DEBUG),true)
-		$(CC) -o $@ -g -c $^
+		$(CC) -o $@ -g -c $<
     else
-		$(CC) -o $@ -c $^
+		$(CC) -o $@ -c $<
     endif
 rebuild: clean all
 
@@ -673,6 +673,22 @@ all:$(TARGET)
 
 clean:
 	$(RM) $(DIR_OBJS) $(DIR_TARGET)
+
+###第十一课
+##自动生成依赖关系
+##值得思考的问题
+##目标文件时候只依赖于源文件
+##编译器如何编译源文件和头文件
+##预处理器将头问家里的代码直接插入源文件
+##编译器只通过预处理后的源文件产生目标文件
+##因此，规则中以源文件为依赖，命令可能无法执行
+
+# OBJS:=func.o main.o
+# hello.out : $(OBJS)
+# 	@gcc -o $@ $^
+# 	@echo "Target File ==> $@"
+# $(OBJS) : %o : %c func.h
+# 	@gcc -o $@ -c $<
 
 
 
