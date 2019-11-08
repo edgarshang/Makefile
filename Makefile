@@ -636,45 +636,46 @@
 
 ##第三节
 
-CC := gcc
-MKDIR := mkdir
-RM := rm -rf
+# CC := gcc
+# MKDIR := mkdir
+# RM := rm -rf
 
-DIR_OBJS := objs
-DIR_TARGET := target
+# DIR_OBJS := objs
+# DIR_TARGET := target
 
-DIRS := $(DIR_OBJS) $(DIR_TARGET)
-#TARGET := $(DIR_TARGET)/hello-makefile.out
-TARGET := $(addprefix $(DIR_TARGET)/, helloword.out)
-# main.c const.c func.c
-SRCS := $(wildcard *.c)
-# main.o const.o func.o
-OBJS := $(SRCS:.c=.o)
-#objs/main.o objs/const.o objs/func.o
-OBJS := $(addprefix $(DIR_OBJS)/, $(OBJS))
+# DIRS := $(DIR_OBJS) $(DIR_TARGET)
+# #TARGET := $(DIR_TARGET)/hello-makefile.out
+# TARGET := $(addprefix $(DIR_TARGET)/, helloword.out)
+# # main.c const.c func.c
+# SRCS := $(wildcard *.c)
+# # main.o const.o func.o
+# OBJS := $(SRCS:.c=.o)
+# #objs/main.o objs/const.o objs/func.o
+# OBJS := $(addprefix $(DIR_OBJS)/, $(OBJS))
 
-.PHONY : rebuild clean all
+# .PHONY : rebuild clean all
 
-$(TARGET) : $(DIRS) $(OBJS)
-	$(CC) -o $@ $(OBJS)
-	@echo "Target file ==> $@"
-$(DIRS):
-	$(MKDIR) $@
-#$(OBJS):$(DIR_OBJS)/%.o : %.c
-$(DIR_OBJS)/%.o : %.c func.h
-    ifeq ($(DEBUG),true)
-		$(CC) -o $@ -g -c $<
-    else
-		$(CC) -o $@ -c $<
-    endif
-rebuild: clean all
+# $(TARGET) : $(DIRS) $(OBJS)
+# 	$(CC) -o $@ $(OBJS)
+# 	@echo "Target file ==> $@"
+# $(DIRS):
+# 	$(MKDIR) $@
+# #$(OBJS):$(DIR_OBJS)/%.o : %.c
+# $(DIR_OBJS)/%.o : %.c func.h
+#     ifeq ($(DEBUG),true)
+# 		$(CC) -o $@ -g -c $<
+#     else
+# 		$(CC) -o $@ -c $<
+#     endif
+# rebuild: clean all
 
-all:$(TARGET)
+# all:$(TARGET)
 
-clean:
-	$(RM) $(DIR_OBJS) $(DIR_TARGET)
+# clean:
+# 	$(RM) $(DIR_OBJS) $(DIR_TARGET)
 
 ###第十一课
+##第一节
 ##自动生成依赖关系
 ##值得思考的问题
 ##目标文件时候只依赖于源文件
@@ -689,6 +690,60 @@ clean:
 # 	@echo "Target File ==> $@"
 # $(OBJS) : %o : %c func.h
 # 	@gcc -o $@ -c $<
+
+###第二节
+##通过命令自动生成对头文件的依赖
+#将生成的依赖自动包含进makefile中
+#当头文件改动后，自动确认
+#预备工作
+#sed命令
+#gcc -MM(gcc -M)编译器依赖选项
+###sed是一个流编辑器，用于流文本的修改
+###sed可用于流文本的中的字符串替换
+###sed的字符串替换方式为：sed 's:src:des:g'
+
+###echo "test=>abc+abc=abc" | sed 's:abc:xyz:g'
+###test=>xyz+xyz=xyz
+###sed的正则表达式支持
+####在sed中可以用正则表达式匹配替换目标
+####并且可以使用匹配的目标生成替换结果
+####sed 's,\(.*\)\.o[ :]*, objs/\1.o :,g'
+###         正则表达式匹配目标  将匹配结果进行替换
+
+##gcc关键编译选项
+##-生成依赖关系
+###获取目标的完整依赖关系
+###gcc -M test.c
+###获取目标的部分依赖关系
+###gcc -MM test.c
+
+###第三节 11.3
+# OBJS:=func.o main.o
+# hello.out : $(OBJS)
+# 	@gcc -o $@ $^
+# 	@echo "Target File ==> $@"
+# $(OBJS) : %o : %c func.h
+# 	@gcc -o $@ -c $<
+
+##小技巧：拆分目标的依赖
+##将目标的完整依赖拆分为多个部分依赖
+############################
+.PHONY:a b c
+test: a b c
+	@echo "$^"
+
+#等价于
+
+# .PHONY:a b c
+
+# test: a b
+# test: b c
+# test:
+# 	@echo "$^"
+##########################
+
+
+
 
 
 
