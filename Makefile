@@ -725,6 +725,29 @@
 # $(OBJS) : %o : %c func.h
 # 	@gcc -o $@ -c $<
 
+
+
+###12.1
+#makefile中的include关键字
+#类似C中的include
+#将其他文件中的内容原封不动的搬到当前文件中
+#语法，include filename
+##include foo.make *.mk $(var)
+##make对include关键字的处理方式
+#在当前目录搜索或指定目录搜索目标文件
+###搜索成功：将文件内容搬入当前makefile中
+###搜索失败：产生警告
+##以文件名作为目标查找并执行对应规则
+##当文件名对应的规则不存在时，最终产生错误
+.PHONY : all
+include test.txt
+
+all:
+	@echo "this is $@"
+test.txt:
+	@echo "test.txt"
+	@touch test.txt
+
 ##小技巧：拆分目标的依赖
 ##将目标的完整依赖拆分为多个部分依赖
 ############################
