@@ -739,14 +739,31 @@
 ###搜索失败：产生警告
 ##以文件名作为目标查找并执行对应规则
 ##当文件名对应的规则不存在时，最终产生错误
+# .PHONY : all
+# include test.txt
+
+# all:
+# 	@echo "this is $@"
+# test.txt:
+# 	@echo "test.txt"
+# 	@touch test.txt
+
+###12.2
+##makefile中执行机制
+##规则中的每个命令默认是在一个新的进程中执行（shell）
+##可以通过接续符（；）将多个命令组合成一个命令
+##组合的命令依次在同一个进程中被执行
+##set -e指定发生错误后立即退出执行
+
 .PHONY : all
-include test.txt
+
 
 all:
-	@echo "this is $@"
-test.txt:
-	@echo "test.txt"
-	@touch test.txt
+	set -e;   \
+	mkdir test;\
+	cd test;\
+	mkdir subtest
+
 
 ##小技巧：拆分目标的依赖
 ##将目标的完整依赖拆分为多个部分依赖
