@@ -755,22 +755,47 @@
 ##组合的命令依次在同一个进程中被执行
 ##set -e指定发生错误后立即退出执行
 
-.PHONY : all
+# .PHONY : all
 
+
+# all:
+# 	set -e;   \
+# 	mkdir test;\
+# 	cd test;\
+# 	mkdir subtest
+
+###12.3
+##解决方案的初步思路
+###通过gcc -MM 和 sed 得到.dep依赖文件（目标的部分依赖）
+######技术点：规则中命令的连续执行
+###通过include指令包含所有的.dep依赖文件
+######技术点：当.dep依赖文件不存在时，使用规则自动生成
+.PHONY : all clean
+MKDIR := mkdir
+RM := rm -rf
+CC := gcc
+
+SRCS := $(wildcard *.c)
+DEPS := $(SRCS:.c=.dep)
+
+-include $(DEPS)
 
 all:
-	set -e;   \
-	mkdir test;\
-	cd test;\
-	mkdir subtest
+	@echo "all"
+%.dep : %.c
+	@echo "Creating $@..."
+	set -e;\
+	$(CC) -MM -E $^ | sed 's,\(.*\)\.o[ :]*, objs/\1.o :,g' > $@
+clean:
+	$(RM) $(DEPS)
 
 
 ##小技巧：拆分目标的依赖
 ##将目标的完整依赖拆分为多个部分依赖
 ############################
-.PHONY:a b c
-test: a b c
-	@echo "$^"
+# .PHONY:a b c
+# test: a b c
+# 	@echo "$^"
 
 #等价于
 
