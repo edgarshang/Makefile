@@ -770,25 +770,59 @@
 ######技术点：规则中命令的连续执行
 ###通过include指令包含所有的.dep依赖文件
 ######技术点：当.dep依赖文件不存在时，使用规则自动生成
+# .PHONY : all clean
+# MKDIR := mkdir
+# RM := rm -rf
+# CC := gcc
+
+# SRCS := $(wildcard *.c)
+# DEPS := $(SRCS:.c=.dep)
+
+# -include $(DEPS)
+
+# all:
+# 	@echo "all"
+# %.dep : %.c
+# 	@echo "Creating $@..."
+# 	set -e;\
+# 	$(CC) -MM -E $^ | sed 's,\(.*\)\.o[ :]*, objs/\1.o :,g' > $@
+# clean:
+# 	$(RM) $(DEPS)
+
+
+####13.1自动生成依赖关系
+
+###解决思路，
+#####当include发现.dep文件不存在时：
+######1、通过规则和命令创建deps文件夹
+######2、将所有.dep文件创建到deps文件夹
+######3、.dep文件中记录目标文件的依赖关系
 .PHONY : all clean
 MKDIR := mkdir
 RM := rm -rf
 CC := gcc
 
+DIR_DEPS := deps
+
 SRCS := $(wildcard *.c)
 DEPS := $(SRCS:.c=.dep)
+DEPS := $(addprefix $(DIR_DEPS)/,$(DEPS))
 
--include $(DEPS)
+include $(DEPS)
 
 all:
 	@echo "all"
-%.dep : %.c
+
+$(DIR_DEPS):
+	$(MKDIR) $@
+$(DIR_DEPS)/%.dep : $(DIR_DEPS) %.c
 	@echo "Creating $@..."
 	set -e;\
-	$(CC) -MM -E $^ | sed 's,\(.*\)\.o[ :]*, objs/\1.o :,g' > $@
+	$(CC) -MM -E $(filter %.c, $^) | sed 's,\(.*\)\.o[ :]*, objs/\1.o :,g' > $@
 clean:
-	$(RM) $(DEPS)
+	-$(RM) $(DIR_DEPS)
 
+###学习心得,include时候,如果包含的文件在,则直接复制过来,如果没有,看没有以他作为目标的依赖
 
 ##小技巧：拆分目标的依赖
 ##将目标的完整依赖拆分为多个部分依赖
