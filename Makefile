@@ -808,19 +808,35 @@ SRCS := $(wildcard *.c)
 DEPS := $(SRCS:.c=.dep)
 DEPS := $(addprefix $(DIR_DEPS)/,$(DEPS))
 
+ifeq ("$(MAKECMDGOALS)", "all")
 include $(DEPS)
+endif
+
+ifeq ("$(MAKECMDGOALS)", "")
+include $(DEPS)
+endif
 
 all:
 	@echo "all"
 
 $(DIR_DEPS):
 	$(MKDIR) $@
+ifeq ("$(wildcard $(DIR_DEPS))", "")
 $(DIR_DEPS)/%.dep : $(DIR_DEPS) %.c
+else
+$(DIR_DEPS)/%.dep : %.c
+endif
 	@echo "Creating $@..."
 	set -e;\
 	$(CC) -MM -E $(filter %.c, $^) | sed 's,\(.*\)\.o[ :]*, objs/\1.o :,g' > $@
 clean:
 	-$(RM) $(DIR_DEPS)
+
+
+###13.2为啥.dep文件会被创建多次
+#####deps文件夹的时间属性会因为依赖文件创建而发生改变
+#####make发现deps文件夹比对应的目标更新
+#####出发相应规则的重新解释
 
 ###学习心得,include时候,如果包含的文件在,则直接复制过来,如果没有,看没有以他作为目标的依赖
 
