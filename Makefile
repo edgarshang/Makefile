@@ -797,46 +797,150 @@
 ######1、通过规则和命令创建deps文件夹
 ######2、将所有.dep文件创建到deps文件夹
 ######3、.dep文件中记录目标文件的依赖关系
-.PHONY : all clean
-MKDIR := mkdir
-RM := rm -rf
-CC := gcc
+# .PHONY : all clean
+# MKDIR := mkdir
+# RM := rm -rf
+# CC := gcc
 
-DIR_DEPS := deps
+# DIR_DEPS := deps
 
-SRCS := $(wildcard *.c)
-DEPS := $(SRCS:.c=.dep)
-DEPS := $(addprefix $(DIR_DEPS)/,$(DEPS))
+# SRCS := $(wildcard *.c)
+# DEPS := $(SRCS:.c=.dep)
+# DEPS := $(addprefix $(DIR_DEPS)/,$(DEPS))
 
-ifeq ("$(MAKECMDGOALS)", "all")
-include $(DEPS)
-endif
+# ifeq ("$(MAKECMDGOALS)", "all")
+# include $(DEPS)
+# endif
 
-ifeq ("$(MAKECMDGOALS)", "")
-include $(DEPS)
-endif
+# ifeq ("$(MAKECMDGOALS)", "")
+# include $(DEPS)
+# endif
 
-all:
-	@echo "all"
+# all:
+# 	@echo "all"
 
-$(DIR_DEPS):
-	$(MKDIR) $@
-ifeq ("$(wildcard $(DIR_DEPS))", "")
-$(DIR_DEPS)/%.dep : $(DIR_DEPS) %.c
-else
-$(DIR_DEPS)/%.dep : %.c
-endif
-	@echo "Creating $@..."
-	set -e;\
-	$(CC) -MM -E $(filter %.c, $^) | sed 's,\(.*\)\.o[ :]*, objs/\1.o :,g' > $@
-clean:
-	-$(RM) $(DIR_DEPS)
+# $(DIR_DEPS):
+# 	$(MKDIR) $@
+# ifeq ("$(wildcard $(DIR_DEPS))", "")
+# $(DIR_DEPS)/%.dep : $(DIR_DEPS) %.c
+# else
+# $(DIR_DEPS)/%.dep : %.c
+# endif
+# 	@echo "Creating $@..."
+# 	set -e;\
+# 	$(CC) -MM -E $(filter %.c, $^) | sed 's,\(.*\)\.o[ :]*, objs/\1.o :,g' > $@
+# clean:
+# 	-$(RM) $(DIR_DEPS)
 
 
 ###13.2为啥.dep文件会被创建多次
 #####deps文件夹的时间属性会因为依赖文件创建而发生改变
 #####make发现deps文件夹比对应的目标更新
 #####出发相应规则的重新解释
+
+
+# .PHONY : all clean
+# MKDIR := mkdir
+# RM := rm -rf
+# CC := gcc
+
+# DIR_DEPS := deps
+
+# SRCS := $(wildcard *.c)
+# DEPS := $(SRCS:.c=.dep)
+# DEPS := $(addprefix $(DIR_DEPS)/,$(DEPS))
+
+# ifeq ("$(MAKECMDGOALS)", "all")
+# include $(DEPS)
+# endif
+
+# ifeq ("$(MAKECMDGOALS)", "")
+# include $(DEPS)
+# endif
+
+# all:
+# 	@echo "all"
+
+# $(DIR_DEPS):
+# 	$(MKDIR) $@
+# ifeq ("$(wildcard $(DIR_DEPS))", "")
+# $(DIR_DEPS)/%.dep : $(DIR_DEPS) %.c
+# else
+# $(DIR_DEPS)/%.dep : %.c
+# endif
+# 	@echo "Creating $@..."
+# 	set -e;\
+# 	$(CC) -MM -E $(filter %.c, $^) | sed 's,\(.*\)\.o[ :]*, objs/\1.o :,g' > $@
+# clean:
+# 	-$(RM) $(DIR_DEPS)
+
+
+#####13.3
+###include的暗黑操作
+###一:使用减号(-)不当关闭了include发出的警告,同事关闭了错误,当错误发生时 make将忽略这些错误
+# .PHONY : all
+# -include test.txt
+
+# all:
+# 	@echo "this is all"
+##编写调试makefile时候,不要加上减号
+
+###二:
+###如果include出发规则创建了文件,之后还会发生什么?
+# .PHONY:all
+# -include test.txt
+# all:
+# 	@echo "this is all"
+# test.txt:
+# 	@echo "Creating $@"
+# 	@echo "other:;@echo "this is other"" > test.txt
+
+#三
+###如果include包含的文件存在,之后还会发生什么?
+# .PHONY : all
+# include test.txt
+# all:
+# 	@echo "this is all"
+# test.txt:b.txt
+# 	@echo "Creating is $@"
+
+##当一个include文件进来后,会检查规则有没有,如果有,则会继续检查时间戳,如果依赖更新,则要执行这条规则
+
+
+####13.4
+.PHONY : all
+include test.txt
+all:
+	@echo "$@: $^"
+test.txt:b.txt
+	@echo "Creating is $@"
+	@echo "all:c.txt" > test.txt
+
+include关键字总结
+当目标文件不存在时,
+	以文件名查找规则,并执行
+当目标文件不存在时,且查找到的规则中创建了目标文件
+	将创建的成功的目标文件包含进当前makefile
+
+如果目标文件存在
+	将创建的成功的目标文件包含进当前makefile
+	以目标文件名查找是否有相应规则
+		yes:比较规则的依赖关系,决定是否执行规则的命令
+		no:null,无操作
+
+当目标文件存在,并且文件名对应的规则也被执行
+	规则中的命令更新了目标文件
+		make重新包含目标文件,替换之前包含的内容
+	目标文件未被更新
+		null没有操作
+
+
+
+
+
+
+
+
 
 ###学习心得,include时候,如果包含的文件在,则直接复制过来,如果没有,看没有以他作为目标的依赖
 
