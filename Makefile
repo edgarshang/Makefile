@@ -908,31 +908,87 @@
 
 
 ####13.4
-.PHONY : all
-include test.txt
-all:
-	@echo "$@: $^"
-test.txt:b.txt
-	@echo "Creating is $@"
-	@echo "all:c.txt" > test.txt
+# .PHONY : all
+# include test.txt
+# all:
+# 	@echo "$@: $^"
+# test.txt:b.txt
+# 	@echo "Creating is $@"
+# 	@echo "all:c.txt" > test.txt
 
-include关键字总结
-当目标文件不存在时,
-	以文件名查找规则,并执行
-当目标文件不存在时,且查找到的规则中创建了目标文件
-	将创建的成功的目标文件包含进当前makefile
+# include关键字总结
+# 当目标文件不存在时,
+# 	以文件名查找规则,并执行
+# 当目标文件不存在时,且查找到的规则中创建了目标文件
+# 	将创建的成功的目标文件包含进当前makefile
 
-如果目标文件存在
-	将创建的成功的目标文件包含进当前makefile
-	以目标文件名查找是否有相应规则
-		yes:比较规则的依赖关系,决定是否执行规则的命令
-		no:null,无操作
+# 如果目标文件存在
+# 	将创建的成功的目标文件包含进当前makefile
+# 	以目标文件名查找是否有相应规则
+# 		yes:比较规则的依赖关系,决定是否执行规则的命令
+# 		no:null,无操作
 
-当目标文件存在,并且文件名对应的规则也被执行
-	规则中的命令更新了目标文件
-		make重新包含目标文件,替换之前包含的内容
-	目标文件未被更新
-		null没有操作
+# 当目标文件存在,并且文件名对应的规则也被执行
+# 	规则中的命令更新了目标文件
+# 		make重新包含目标文件,替换之前包含的内容
+# 	目标文件未被更新
+# 		null没有操作
+
+####14自动生成依赖关系
+##
+
+.PHONY : all clean
+MKDIR := mkdir
+RM := rm -rf
+CC := gcc
+
+DIR_DEPS := deps
+DIR_EXES := exes
+DIR_OBJS := objs
+
+DIRS := $(DIR_DEPS) $(DIR_EXES) $(DIR_OBJS)
+
+EXE := app.out
+EXE := $(addprefix $(DIR_EXES)/, $(EXE))
+
+SRCS := $(wildcard *.c)
+OBJS := $(SRCS:.c=.o)
+OBJS := $(addprefix $(DIR_OBJS)/, $(OBJS))
+DEPS := $(SRCS:.c=.dep)
+DEPS := $(addprefix $(DIR_DEPS)/, $(DEPS))
+
+all : $(DIR_OBJS) $(DIR_EXES) $(EXE)
+
+ifeq ("$(MAKECMDGOALS)", "all")
+include $(DEPS)
+endif
+
+ifeq ("$(MAKECMDGOALS)", "")
+include $(DEPS)
+endif
+
+$(EXE) : $(OBJS)
+	$(CC) -o $@ $^
+	@echo "Success! Target => $(EXE)"	
+
+$(DIR_OBJS)/%.o : %.c
+	@echo "----> $<"
+	$(CC) -o $@ -c $(filter %.c, $^)
+
+$(DIRS):
+	$(MKDIR) $@
+
+
+ifeq ("$(wildcard $(DIR_DEPS))", "")
+$(DIR_DEPS)/%.dep : $(DIR_DEPS) %.c
+else
+$(DIR_DEPS)/%.dep : %.c
+endif
+	@echo "Creating $@..."
+	@set -e;\
+	$(CC) -MM -E $(filter %.c, $^) | sed 's,\(.*\)\.o[ :]*, objs/\1.o : ,g' > $@
+clean:
+	$(RM) $(DIRS)
 
 
 
