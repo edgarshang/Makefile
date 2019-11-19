@@ -1,7 +1,7 @@
 #ifndef FUNC_H
 #define FUNC_H
 
-#define HELLO "hello Makefile,sss"
+#include "define.h"
 
 void foo();
 

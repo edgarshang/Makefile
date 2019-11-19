@@ -937,7 +937,7 @@
 ####14自动生成依赖关系
 ##
 
-.PHONY : all clean
+.PHONY : all clean rebuild
 MKDIR := mkdir
 RM := rm -rf
 CC := gcc
@@ -986,9 +986,19 @@ $(DIR_DEPS)/%.dep : %.c
 endif
 	@echo "Creating $@..."
 	@set -e;\
-	$(CC) -MM -E $(filter %.c, $^) | sed 's,\(.*\)\.o[ :]*, objs/\1.o : ,g' > $@
+	$(CC) -MM -E $(filter %.c, $^) | sed 's,\(.*\)\.o[ :]*, objs/\1.o $@ : ,g' > $@
 clean:
 	$(RM) $(DIRS)
+rebuild:
+	$(MAKE) clean
+	$(MAKE) all
+
+##小节
+#makefile中可以将目标的依赖拆分写到不同的地方
+#include关键字能够出发相应的规则的执行
+#如果规则的执行导致依赖更新,可能导致再次解释执行相应规则
+#依赖文件也需要依赖于源文件得到正确的编译决策
+#自动生成文件间的依赖关系能够提高makefile的移植性
 
 
 
