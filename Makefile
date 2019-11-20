@@ -937,61 +937,61 @@
 ####14自动生成依赖关系
 ##
 
-.PHONY : all clean rebuild
-MKDIR := mkdir
-RM := rm -rf
-CC := gcc
+# .PHONY : all clean rebuild
+# MKDIR := mkdir
+# RM := rm -rf
+# CC := gcc
 
-DIR_DEPS := deps
-DIR_EXES := exes
-DIR_OBJS := objs
+# DIR_DEPS := deps
+# DIR_EXES := exes
+# DIR_OBJS := objs
 
-DIRS := $(DIR_DEPS) $(DIR_EXES) $(DIR_OBJS)
+# DIRS := $(DIR_DEPS) $(DIR_EXES) $(DIR_OBJS)
 
-EXE := app.out
-EXE := $(addprefix $(DIR_EXES)/, $(EXE))
+# EXE := app.out
+# EXE := $(addprefix $(DIR_EXES)/, $(EXE))
 
-SRCS := $(wildcard *.c)
-OBJS := $(SRCS:.c=.o)
-OBJS := $(addprefix $(DIR_OBJS)/, $(OBJS))
-DEPS := $(SRCS:.c=.dep)
-DEPS := $(addprefix $(DIR_DEPS)/, $(DEPS))
+# SRCS := $(wildcard *.c)
+# OBJS := $(SRCS:.c=.o)
+# OBJS := $(addprefix $(DIR_OBJS)/, $(OBJS))
+# DEPS := $(SRCS:.c=.dep)
+# DEPS := $(addprefix $(DIR_DEPS)/, $(DEPS))
 
-all : $(DIR_OBJS) $(DIR_EXES) $(EXE)
+# all : $(DIR_OBJS) $(DIR_EXES) $(EXE)
 
-ifeq ("$(MAKECMDGOALS)", "all")
-include $(DEPS)
-endif
+# ifeq ("$(MAKECMDGOALS)", "all")
+# include $(DEPS)
+# endif
 
-ifeq ("$(MAKECMDGOALS)", "")
-include $(DEPS)
-endif
+# ifeq ("$(MAKECMDGOALS)", "")
+# include $(DEPS)
+# endif
 
-$(EXE) : $(OBJS)
-	$(CC) -o $@ $^
-	@echo "Success! Target => $(EXE)"	
+# $(EXE) : $(OBJS)
+# 	$(CC) -o $@ $^
+# 	@echo "Success! Target => $(EXE)"	
 
-$(DIR_OBJS)/%.o : %.c
-	@echo "----> $<"
-	$(CC) -o $@ -c $(filter %.c, $^)
+# $(DIR_OBJS)/%.o : %.c
+# 	@echo "----> $<"
+# 	$(CC) -o $@ -c $(filter %.c, $^)
 
-$(DIRS):
-	$(MKDIR) $@
+# $(DIRS):
+# 	$(MKDIR) $@
 
 
-ifeq ("$(wildcard $(DIR_DEPS))", "")
-$(DIR_DEPS)/%.dep : $(DIR_DEPS) %.c
-else
-$(DIR_DEPS)/%.dep : %.c
-endif
-	@echo "Creating $@..."
-	@set -e;\
-	$(CC) -MM -E $(filter %.c, $^) | sed 's,\(.*\)\.o[ :]*, objs/\1.o $@ : ,g' > $@
-clean:
-	$(RM) $(DIRS)
-rebuild:
-	$(MAKE) clean
-	$(MAKE) all
+# ifeq ("$(wildcard $(DIR_DEPS))", "")
+# $(DIR_DEPS)/%.dep : $(DIR_DEPS) %.c
+# else
+# $(DIR_DEPS)/%.dep : %.c
+# endif
+# 	@echo "Creating $@..."
+# 	@set -e;\
+# 	$(CC) -MM -E $(filter %.c, $^) | sed 's,\(.*\)\.o[ :]*, objs/\1.o $@ : ,g' > $@
+# clean:
+# 	$(RM) $(DIRS)
+# rebuild:
+# 	$(MAKE) clean
+# 	$(MAKE) all
 
 ##小节
 #makefile中可以将目标的依赖拆分写到不同的地方
@@ -1000,14 +1000,54 @@ rebuild:
 #依赖文件也需要依赖于源文件得到正确的编译决策
 #自动生成文件间的依赖关系能够提高makefile的移植性
 
+##############--------------------------------------------------------
+###15 课
+#如果一个目标的命令拆分的写到不同地方,会发生什么?
+# .PHONY: all
+# all:
+# 	@echo "command-1"
+# VAR := test
+# all:
+# 	@echo "all:$(VAR)"
+##############--------------------------------------------------------
+##makefile中出现同名目标时,
+###依赖:
+#####所有依赖将合并在一起,称为目标的最终依赖
+###命令:
+#####当多处出现同一目标命令时,make发出警告
+#####所有之前定义的命令被最后定义的命令取代
+
+###注意事项
+###-当使用include关键字包含其他文件时,需要确保被包含文件中的同名目标只有依赖,没有命令,否则,同名目标的命令将被覆盖
+# .PHONY: all
+
+# VAR := test
+# all:
+# 	@echo "all:$(VAR)"
+
+# include 1.mk
+##############--------------------------------------------------------
+####15.2
+###什么是make中的隐式规则?
+####----make提供了一些常用的,例行的规则实现
+###----当相应目标的规则未提供时,make尝试使用隐式规则
+
+##############--------------------------------------------------------
+#####? 下面的程序能否正常执行,为什么?
+SRCS := $(wildcard *.c)
+OBJS := $(SRCS:.c=.o)
+
+app.out:$(OBJS)
+	$(CC) -o $@ $^
+	$(RM) $^
+	@echo "Target ==> $@"
+
+#####答案是:make中有隐式规则,可以让
+###CC是C语言编译器,第一个C是C语言,第二个C是complair
 
 
 
-
-
-
-
-
+##############--------------------------------------------------------
 ###学习心得,include时候,如果包含的文件在,则直接复制过来,如果没有,看没有以他作为目标的依赖
 
 ##小技巧：拆分目标的依赖
