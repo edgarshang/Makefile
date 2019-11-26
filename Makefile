@@ -1105,20 +1105,20 @@
 ##############--------------------------------------------------------
 ###17.1,make中的路径搜索
 ###常用源码管理
-OBJS := func.o main.o
-INC := inc
-SRC := src
+# OBJS := func.o main.o
+# INC := inc
+# SRC := src
 
-VPATH := $(INC) $(SRC)
+# VPATH := $(INC) $(SRC)
 
-CFLAGS := -I $(INC)
+# CFLAGS := -I $(INC)
 
-hello.out : $(OBJS)
-	@gcc -o $@ $^
-	@echo "Target File ==> $@"
+# hello.out : $(OBJS)
+# 	@gcc -o $@ $^
+# 	@echo "Target File ==> $@"
 
-$(OBJS):%.o:%.c
-	@gcc $(CFLAGS) -o $@ -c $<
+# $(OBJS):%.o:%.c
+# 	@gcc $(CFLAGS) -o $@ -c $<
 ###特殊的预定义变量VPATH(全大写)
 ###--VPATH变量的值用于指示make如何查找文件
 ###--不同文件夹作为VPATH的值同时出现
@@ -1134,6 +1134,41 @@ $(OBJS):%.o:%.c
 ###-------VPATH只能决定make的搜索路径,无法决定命令的搜索路径
 ###-------对于特定的编译命令(gcc),需要独立指定编译搜索路径
 ###     gcc -I include-path
+
+###17.2
+###替换方案,vpath(关键字)
+###---为不同类型的文件指定不同的搜索路径
+###---语法:
+####----在Directory 中搜索符合Pattern的规则的文件
+####   vpath Pattern Directory
+#####      vpath %.h inc
+#####      vpath %.c src
+
+OBJS := func.o main.o
+INC := inc
+SRC := src
+CFLAGS := -I $(INC)
+
+vpath %.h $(INC)
+vpath %.c $(SRC)
+
+
+hello.out : $(OBJS)
+	@gcc -o $@ $^
+	@echo "Target File ==> $@"
+
+
+$(OBJS):%.o:%.c
+	@gcc $(CFLAGS) -o $@ -c $<
+
+###取消搜索规则
+###---取消已经设置的某个搜索规则
+#####'''vpath Pattern
+####---forexample  vpath %.h inc  // 在inc中搜索.h文件
+####---            vpath %.h      // 不再到inc中搜索.h文件
+
+####-----取消所有已经设置的规则   vpath
+
 
 
 
