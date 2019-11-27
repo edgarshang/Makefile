@@ -1144,22 +1144,22 @@
 #####      vpath %.h inc
 #####      vpath %.c src
 
-OBJS := func.o main.o
-INC := inc
-SRC := src
-CFLAGS := -I $(INC)
+# OBJS := func.o main.o
+# INC := inc
+# SRC := src
+# CFLAGS := -I $(INC)
 
-vpath %.h $(INC)
-vpath %.c $(SRC)
-
-
-hello.out : $(OBJS)
-	@gcc -o $@ $^
-	@echo "Target File ==> $@"
+# vpath %.h $(INC)
+# vpath %.c $(SRC)
 
 
-$(OBJS):%.o:%.c
-	@gcc $(CFLAGS) -o $@ -c $<
+# hello.out : $(OBJS)
+# 	@gcc -o $@ $^
+# 	@echo "Target File ==> $@"
+
+
+# $(OBJS):%.o:%.c
+# 	@gcc $(CFLAGS) -o $@ -c $<
 
 ###取消搜索规则
 ###---取消已经设置的某个搜索规则
@@ -1169,7 +1169,28 @@ $(OBJS):%.o:%.c
 
 ####-----取消所有已经设置的规则   vpath
 
+##############--------------------------------------------------------
+###18.1make中的路径搜索
+##当VPATH和vpath同时出现的时候,会发生什么情况
+VPATH := src1
+CFLAGS := -I inc
 
+vpath %.h inc
+vpath %.c src2
+
+
+app.out : func.o main.o
+	@gcc -o $@ $^
+	@echo "Target File ==> $@"
+
+
+%.o:%.c func.h
+	@gcc $(CFLAGS) -o $@ -c $<
+###---make优先在vpath中搜索,如果vpath中不存在,则退而求其次在VPATH中搜索
+###make首先在当前文件夹下找,然后在vpath中搜索,最后在变量VPATH中搜索
+
+###18.2 make中路径搜索
+##问题:当使用vpath对同一个Pattern指定多个文件夹的时候
 
 
 
