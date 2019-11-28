@@ -1192,23 +1192,68 @@
 ###18.2 make中路径搜索
 ##问题:当使用vpath对同一个Pattern指定多个文件夹的时候
 
-CFLAGS := -I inc
+# CFLAGS := -I inc
 
-vpath %.c src1
-vpath %.c src2
+# vpath %.c src1
+# vpath %.c src2
 
-vpath %.h inc
+# vpath %.h inc
 
-app.out : func.o main.o
-	@gcc -o $@ $^
-	@echo "Target File ==> $@"
+# app.out : func.o main.o
+# 	@gcc -o $@ $^
+# 	@echo "Target File ==> $@"
 
 
-%.o:%.c func.h
-	@gcc $(CFLAGS) -o $@ -c $<
+# %.o:%.c func.h
+# 	@gcc $(CFLAGS) -o $@ -c $<
 
 ###make自上而下指定搜索文件,找到文件,搜索结束,优先使用vpath关键字,不使用VPATH变量
 
+
+####18.3make中的路径搜索
+###通过VPATH指定搜索路径后,make如何决定目标文件的最终位置
+
+# VPATH := src
+# CFLAGS := -I inc
+# CC := gcc
+
+# app.out:func.o main.o
+# 	@$(CC) -o $@ $^
+# 	@echo "Target File ==> $@"
+
+# %.o : %c inc/func.h
+# 	@$(CC) $(CFLAGS) -o $@ -c $<
+
+###实验结论
+###当app.out完全不存在,
+####make在当前文件下创建app.out
+###当src文件中存在app.out
+#####所有目标和依赖的新旧关系不变,make不会重新创建app.out
+####当依赖文件被更新,make在当前文件夹下创建app.out
+
+
+#####问题
+##########当依赖改变时,如何使得src下的app.out也修改
+
+####解决方案,
+###----------使用GPATH特殊变量指定目标文件夹
+###----------GPATH:= src
+##########当app.out不存在时, make默认在当前文件夹创建app.out
+##########当app.out存在于src, 且依赖文件被更新 make在src中创建app.out
+
+GPATH := src
+VPATH := src
+CFLAGS := -I inc
+CC := gcc
+
+app.out:func.o main.o
+	@$(CC) -o $@ $^
+	@echo "Target File ==> $@"
+
+%.o : %c inc/func.h
+	@$(CC) $(CFLAGS) -o $@ -c $<
+
+###避免VPATH和GPATH特殊变量的使用
 
 
 

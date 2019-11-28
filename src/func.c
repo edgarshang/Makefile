@@ -4,5 +4,5 @@
 
 void foo(void)
 {
-    printf("void foo(): %s\n", "src2");
+    printf("void and foo(): %s\n", HELLO);
 }
