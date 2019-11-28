@@ -1241,23 +1241,64 @@
 ##########当app.out不存在时, make默认在当前文件夹创建app.out
 ##########当app.out存在于src, 且依赖文件被更新 make在src中创建app.out
 
-GPATH := src
-VPATH := src
-CFLAGS := -I inc
-CC := gcc
+# GPATH := src
+# VPATH := src
+# CFLAGS := -I inc
+# CC := gcc
 
-app.out:func.o main.o
-	@$(CC) -o $@ $^
-	@echo "Target File ==> $@"
+# app.out:func.o main.o
+# 	@$(CC) -o $@ $^
+# 	@echo "Target File ==> $@"
 
-%.o : %c inc/func.h
-	@$(CC) $(CFLAGS) -o $@ -c $<
+# %.o : %c inc/func.h
+# 	@$(CC) $(CFLAGS) -o $@ -c $<
 
 ###避免VPATH和GPATH特殊变量的使用
 
 
 
 ##############--------------------------------------------------------
+###19.1 路径搜索的综合示列
+###需求分析
+###--工程项目中不希望源码文件夹在编译时被改动(只读文件夹)
+###--在编译时自动创建文件夹(build)用于存放编译结果
+###--编译过程中能够自动搜索需要的文件
+###--makefile易于扩展, 能够复用于相同类型的项目
+###--支持调试版本的编译选项
+
+###项目类型分析
+#---project
+#     |
+#     |---->inc
+#     |
+#     |---->src----->源码文件夹
+#     |
+#     |---->build--->目标文件夹
+#     |
+#     |---->makefile --->可以复用的makefile
+# ---工具原料
+#----$(wildcard $(DIR)/_pattern)
+#---------获取$(DIR)文件夹中国满足_pattern的文件
+#----$(notdir _names)
+#---------去除_names中每一个文件名的路径前缀
+#----$(patsubst _pattern, replacement, _text)
+#---------将_text中符合_pattern的部分替换为replacement
+
+#--------关键技巧
+#-1,自动获取源文件列表
+#    SRCS := $(wildcard src/*.c)
+#-2,根据源文件列表生成目标文件列表(变量的值替换)
+#    OBJS := $(SRCS:.c=.o)
+#-3,替换每一个目标文件的路径前缀(函数调用)
+#    OBJS := $(patsubst src/%, build/%, $(OBJS))
+
+#   编译规则的依赖
+#  all ---->  build(dir) ----> mkdir
+#   |            ^   ^
+#   |  __________|   |
+#   V  |             |
+#  app.out   ---->  %.o  --->  gcc %.c
+#############--------------------------------------------------------
 
 ###学习心得,include时候,如果包含的文件在,则直接复制过来,如果没有,看没有以他作为目标的依赖
 
