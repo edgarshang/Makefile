@@ -1300,29 +1300,74 @@
 #  app.out   ---->  %.o  --->  gcc %.c
 
 ####19.2
-.PHONY : all clean
+# .PHONY : all clean
 
 
+# DIR_BUILD := build
+# DIR_SRC := src
+# DIR_INC := inc
+
+# CC := gcc
+
+# CFLAGS := -I $(DIR_INC)
+
+# MKDIR := mkdir
+# RM := rm -rf
+
+# APP := $(DIR_BUILD)/app.out
+# HDRS := $(wildcard $(DIR_INC)/*.h)
+# HDRS := $(notdir $(HDRS))
+# OBJS := $(wildcard $(DIR_SRC)/*.c)
+# OBJS := $(OBJS:.c=.o)
+# OBJS := $(patsubst $(DIR_SRC)/%, $(DIR_BUILD)/%, $(OBJS))
+
+# vpath %.h $(DIR_INC)
+# vpath %.c $(DIR_SRC)
+
+# all : $(DIR_BUILD) $(APP)
+# 	@echo "Target File ==> $(APP)"
+
+# $(DIR_BUILD) : 
+# 	$(MKDIR) $@
+
+# $(APP) : $(OBJS)
+# 	$(CC) -o $@ $^
+
+# $(DIR_BUILD)/%.o : %.c $(HDRS)
+# 	$(CC) $(CFLAGS) -o $@ -c $<
+
+# clean :
+# 	$(RM) $(DIR_BUILD)
+
+
+###19.3
 DIR_BUILD := build
 DIR_SRC := src
 DIR_INC := inc
 
+TYPE_INC := .h
+TYPE_SRC := .c
+TYPE_OBJ := .o
+
 CC := gcc
 
+LFLAGS := 
 CFLAGS := -I $(DIR_INC)
-
+ifeq ($(DEBUG), true)
+CFLAGS += -g
+endif
 MKDIR := mkdir
 RM := rm -rf
 
 APP := $(DIR_BUILD)/app.out
-HDRS := $(wildcard $(DIR_INC)/*.h)
+HDRS := $(wildcard $(DIR_INC)/*$(TYPE_INC))
 HDRS := $(notdir $(HDRS))
-OBJS := $(wildcard $(DIR_SRC)/*.c)
-OBJS := $(OBJS:.c=.o)
+OBJS := $(wildcard $(DIR_SRC)/*$(TYPE_SRC))
+OBJS := $(OBJS:$(TYPE_SRC)=$(TYPE_OBJ))
 OBJS := $(patsubst $(DIR_SRC)/%, $(DIR_BUILD)/%, $(OBJS))
 
-vpath %.h $(DIR_INC)
-vpath %.c $(DIR_SRC)
+vpath %$(TYPE_INC) $(DIR_INC)
+vpath %$(TYPE_SRC) $(DIR_SRC)
 
 all : $(DIR_BUILD) $(APP)
 	@echo "Target File ==> $(APP)"
@@ -1331,13 +1376,14 @@ $(DIR_BUILD) :
 	$(MKDIR) $@
 
 $(APP) : $(OBJS)
-	$(CC) -o $@ $^
+	$(CC) $(LFLAGS) -o $@ $^
 
-$(DIR_BUILD)/%.o : %.c $(HDRS)
+$(DIR_BUILD)/%$(TYPE_OBJ) : %$(TYPE_SRC) $(HDRS)
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 clean :
 	$(RM) $(DIR_BUILD)
+
 #############--------------------------------------------------------
 
 ###学习心得,include时候,如果包含的文件在,则直接复制过来,如果没有,看没有以他作为目标的依赖
