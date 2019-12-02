@@ -1341,51 +1341,79 @@
 
 
 ###19.3
-DIR_BUILD := build
-DIR_SRC := src
-DIR_INC := inc
+# DIR_BUILD := build
+# DIR_SRC := src
+# DIR_INC := inc
 
-TYPE_INC := .h
-TYPE_SRC := .c
-TYPE_OBJ := .o
+# TYPE_INC := .h
+# TYPE_SRC := .c
+# TYPE_OBJ := .o
 
-CC := gcc
+# CC := gcc
 
-LFLAGS := 
-CFLAGS := -I $(DIR_INC)
-ifeq ($(DEBUG), true)
-CFLAGS += -g
-endif
-MKDIR := mkdir
-RM := rm -rf
+# LFLAGS := 
+# CFLAGS := -I $(DIR_INC)
+# ifeq ($(DEBUG), true)
+# CFLAGS += -g
+# endif
+# MKDIR := mkdir
+# RM := rm -rf
 
-APP := $(DIR_BUILD)/app.out
-HDRS := $(wildcard $(DIR_INC)/*$(TYPE_INC))
-HDRS := $(notdir $(HDRS))
-OBJS := $(wildcard $(DIR_SRC)/*$(TYPE_SRC))
-OBJS := $(OBJS:$(TYPE_SRC)=$(TYPE_OBJ))
-OBJS := $(patsubst $(DIR_SRC)/%, $(DIR_BUILD)/%, $(OBJS))
+# APP := $(DIR_BUILD)/app.out
+# HDRS := $(wildcard $(DIR_INC)/*$(TYPE_INC))
+# HDRS := $(notdir $(HDRS))
+# OBJS := $(wildcard $(DIR_SRC)/*$(TYPE_SRC))
+# OBJS := $(OBJS:$(TYPE_SRC)=$(TYPE_OBJ))
+# OBJS := $(patsubst $(DIR_SRC)/%, $(DIR_BUILD)/%, $(OBJS))
 
-vpath %$(TYPE_INC) $(DIR_INC)
-vpath %$(TYPE_SRC) $(DIR_SRC)
+# vpath %$(TYPE_INC) $(DIR_INC)
+# vpath %$(TYPE_SRC) $(DIR_SRC)
 
-all : $(DIR_BUILD) $(APP)
-	@echo "Target File ==> $(APP)"
+# all : $(DIR_BUILD) $(APP)
+# 	@echo "Target File ==> $(APP)"
 
-$(DIR_BUILD) : 
-	$(MKDIR) $@
+# $(DIR_BUILD) : 
+# 	$(MKDIR) $@
 
-$(APP) : $(OBJS)
-	$(CC) $(LFLAGS) -o $@ $^
+# $(APP) : $(OBJS)
+# 	$(CC) $(LFLAGS) -o $@ $^
 
-$(DIR_BUILD)/%$(TYPE_OBJ) : %$(TYPE_SRC) $(HDRS)
-	$(CC) $(CFLAGS) -o $@ -c $<
+# $(DIR_BUILD)/%$(TYPE_OBJ) : %$(TYPE_SRC) $(HDRS)
+# 	$(CC) $(CFLAGS) -o $@ -c $<
 
-clean :
-	$(RM) $(DIR_BUILD)
+# clean :
+# 	$(RM) $(DIR_BUILD)
 
 #############--------------------------------------------------------
+###20.1打造专业的编译环境
+##项目架构设计分析
+##--项目被划分为多个不同的模块
+##-----每个模块的代码用一个文件夹进行管理
+##--------文件夹由inc, src, makfile构成
+##-----每个模块的对外函数声明统一放置于common/inc中
+##--------如:common.h xxxfunc.h
 
+#####需要打造的编译环境
+###源码文件夹在编译时不能被改动(只读文件夹)
+###在编译时自动创建文件夹(build)用于存放编译结果
+###编译过程中能够自动生成依赖关系, 自动搜索需要的文件
+###每个模块可以拥有自己独立的编译方式
+###支持调试版本的编译选项
+
+###解决方案设计
+######-----第一阶段:将每个模块中的代码编译成静态库文件
+######-----第二阶段:将每个模块的静态文件链接成最终可执行程序
+
+
+#########-------第一阶段任务:
+#########----------完成可用于各个模块的makefile文件
+#########----------每个模块的编译结果为静态库文件(.a文件)
+#############--关键实现要点
+#############-----自动生成依赖关系(gcc -MM)
+#############-----自动搜索需要的文件(vpath)
+#############-----将目标文件打包为静态库文件(ar  crs)
+
+#############--------------------------------------------------------
 ###学习心得,include时候,如果包含的文件在,则直接复制过来,如果没有,看没有以他作为目标的依赖
 
 ##小技巧：拆分目标的依赖
@@ -1404,7 +1432,6 @@ clean :
 # test:
 # 	@echo "$^"
 ##########################
-
 
 
 
