@@ -1416,7 +1416,8 @@
 ###20.2打造专业的编译环境
 .PHONY : all
 
-DIR_COMMON_INC := 
+DIR_BUILD := /home/SENSETIME/shangzhiqiang/edgarGit/Makefile/build
+DIR_COMMON_INC := /home/SENSETIME/shangzhiqiang/edgarGit/Makefile/common/inc
 
 DIR_SRC := src
 DIR_INC := inc
@@ -1438,9 +1439,25 @@ endif
 
 MOUDLE := $(realpath .)
 MOUDLE := $(notdir $(MOUDLE))
+DIR_OUTPUT := $(addprefix $(DIR_BUILD)/, $(MOUDLE))
+
+OUTPUT := $(MOUDLE).a
+OUTPUT := $(addprefix $(DIR_BUILD)/, $(OUTPUT))
+
+SRCS := $(wildcard $(DIR_SRC)/*$(TYPE_SRC))
+OBJS := $(SRCS:$(TYPE_SRC)=$(TYPE_OBJ))
+OBJS := $(patsubst $(DIR_SRC)/%, $(DIR_OUTPUT)/%, $(OBJS))
+
+DEPS := $(SRCS:$(TYPE_SRC)=$(TYPE_DEP))
+DEPS := $(patsubst $(DIR_SRC)/%, $(DIR_OUTPUT)/%, $(DEPS))
+
+vpath %$(TYPE_INC) $(DIR_INC)
+vpath %$(TYPE_INC) $(DIR_COMMON_INC)
+
+vpath %$(TYPE_SRC) $(DIR_SRC)
 
 all:
-	@echo "$(CFLAGS)"
+	@echo "$(DEPS)"
 
 #############--------------------------------------------------------
 ###学习心得,include时候,如果包含的文件在,则直接复制过来,如果没有,看没有以他作为目标的依赖
