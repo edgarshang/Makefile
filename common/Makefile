@@ -1456,9 +1456,22 @@ vpath %$(TYPE_INC) $(DIR_COMMON_INC)
 
 vpath %$(TYPE_SRC) $(DIR_SRC)
 
-all:
-	@echo "$(DEPS)"
+# include $(DEPS)
 
+all: $(OBJS)
+	@echo "Success ! Targtet ==> $(OBJS)"
+# $(OUTPUT) : $(OBJS)
+# 	$(AR) $(ARFLAGS) $@ $^
+# $(DIR_OUTPUT)/%$(TYPE_OBJ) : %$(TYPE_SRC)
+# 	$(CC) $(CFLAGS) -o $@ -c $(filter %$(TYPE_SRC), $^)
+
+# $(DIR_OUTPUT)/%$(TYPE_DEP) : %$(TYPE_SRC)
+# 	@echo "Creating $@..."
+# 	@set -e; \
+# 	$(CC) $(CFLAGS) -MM -E $(filter %(TYPE_SRC), $^) | sed 's,\(.*\)\.o[ :]*, $(DIR_OUTPUT)/\1.o $@ : ,g' > $@
+                                                     
+
+#   sed 's,\(.*\)\.o[ :]*, $(DIR_OUTPUT)/\1.o :,g' > $@
 #############--------------------------------------------------------
 ###学习心得,include时候,如果包含的文件在,则直接复制过来,如果没有,看没有以他作为目标的依赖
 
