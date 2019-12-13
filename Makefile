@@ -1414,34 +1414,81 @@
 #############-----将目标文件打包为静态库文件(ar  crs)
 
 ###20.2打造专业的编译环境
-.PHONY : all
+# .PHONY : all
 
-DIR_COMMON_INC := 
+# DIR_COMMON_INC := 
 
-DIR_SRC := src
-DIR_INC := inc
+# DIR_SRC := src
+# DIR_INC := inc
 
-TYPE_INC := .h
-TYPE_SRC := .c
-TYPE_OBJ := .o
-TYPE_DEP := .dep
+# TYPE_INC := .h
+# TYPE_SRC := .c
+# TYPE_OBJ := .o
+# TYPE_DEP := .dep
 
-AR := ar #打包命令
-ARFLAGS := crs
+# AR := ar #打包命令
+# ARFLAGS := crs
 
-CC := gcc
-CFLAGS := -I$(DIR_INC) -I$(DIR_COMMON_INC)
+# CC := gcc
+# CFLAGS := -I$(DIR_INC) -I$(DIR_COMMON_INC)
 
-ifeq ($(DEBUG), true)
-CFLAGS += -g 
-endif
+# ifeq ($(DEBUG), true)
+# CFLAGS += -g 
+# endif
 
-MOUDLE := $(realpath .)
-MOUDLE := $(notdir $(MOUDLE))
+# MOUDLE := $(realpath .)
+# MOUDLE := $(notdir $(MOUDLE))
+
+# all:
+# 	@echo "$(CFLAGS)"
+
+#############--------------------------------------------------------
+####
+##21.1 makefile中嵌入shell脚本
+# MODULES := common module main
+
+# test :
+# 	@set -e; \
+# 	for dir in $(MODULES);\
+# 	do\
+# 		echo $$dir;\
+# 	done
+
+##21.2 makefile中嵌入shell脚本  shell中的for循环
+
+.PHONY : all compile link
+
+MODULES := common module main
+
+MKDIR := mkdir
+RM := rm -fr
+
+DIR_PRIJECT := $(realpath .)
+DIR_BUILD := build
+DIR_BUILD_SUB := $(addprefix $(DIR_BUILD)/, $(MODULES))
 
 all:
-	@echo "$(CFLAGS)"
+	@echo "$(DIR_BUILD_SUB)"
 
+
+compile : $(DIR_BUILD) $(DIR_BUILD_SUB)
+	@echo "Begin to compile ..."
+	@set -e; \
+	for dir in $(MODULES);\
+	do\
+		echo $$dir && $(MAKE) all DEBUG:=$(DEBUG) && cd ..;\
+	done
+	@echo "Compile Success!"
+
+$(DIR_BUILD) $(DIR_BUILD_SUB) :
+	$(MKDIR) $@
+
+
+
+#####21.3
+###-gcc在进行静态链接时必须遵循严格的依赖关系
+###如果不清楚库之间的依赖关系,可以使用-Xlinker自动确定依赖关系
+###gcc -o app.out -Xlinker "-(" z.a y.a x.a -Xlinker "-)"
 #############--------------------------------------------------------
 ###学习心得,include时候,如果包含的文件在,则直接复制过来,如果没有,看没有以他作为目标的依赖
 
