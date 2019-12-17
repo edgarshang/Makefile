@@ -1,0 +1,2 @@
+/home/SENSETIME/shangzhiqiang/edgarGit/Makefile/22/build/module/module.o /home/SENSETIME/shangzhiqiang/edgarGit/Makefile/22/build/module/module.dep : src/module.c inc/module.h \
+ /home/SENSETIME/shangzhiqiang/edgarGit/Makefile/22/common/inc/func.h
