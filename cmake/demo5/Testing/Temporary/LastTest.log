@@ -1,0 +1,95 @@
+Start testing: Feb 20 21:57 CST
+----------------------------------------------------------
+1/5 Testing: test_run
+1/5 Test: test_run
+Command: "/home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo5/cmake" "5" "2"
+Directory: /home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo5
+"test_run" start time: Feb 20 21:57 CST
+Output:
+----------------------------------------------------------
+Now we use our own Math library-----. 
+5 ^ 2 is 25
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"test_run" end time: Feb 20 21:57 CST
+"test_run" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/5 Testing: test_usage
+2/5 Test: test_usage
+Command: "/home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo5/cmake"
+Directory: /home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo5
+"test_usage" start time: Feb 20 21:57 CST
+Output:
+----------------------------------------------------------
+Usage: /home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo5/cmake base exponent
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found.Regex=[Usage: .* base exponent
+]
+"test_usage" end time: Feb 20 21:57 CST
+"test_usage" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/5 Testing: test_5_2
+3/5 Test: test_5_2
+Command: "/home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo5/cmake" "5" "2"
+Directory: /home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo5
+"test_5_2" start time: Feb 20 21:57 CST
+Output:
+----------------------------------------------------------
+Now we use our own Math library-----. 
+5 ^ 2 is 25
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found.Regex=[is 25
+]
+"test_5_2" end time: Feb 20 21:57 CST
+"test_5_2" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/5 Testing: test_10_5
+4/5 Test: test_10_5
+Command: "/home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo5/cmake" "10" "5"
+Directory: /home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo5
+"test_10_5" start time: Feb 20 21:57 CST
+Output:
+----------------------------------------------------------
+Now we use our own Math library-----. 
+10 ^ 5 is 100000
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found.Regex=[is 100000
+]
+"test_10_5" end time: Feb 20 21:57 CST
+"test_10_5" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/5 Testing: test_2_10
+5/5 Test: test_2_10
+Command: "/home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo5/cmake" "2" "10"
+Directory: /home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo5
+"test_2_10" start time: Feb 20 21:57 CST
+Output:
+----------------------------------------------------------
+Now we use our own Math library-----. 
+2 ^ 10 is 1024
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Pass Reason:
+Required regular expression found.Regex=[is 1024
+]
+"test_2_10" end time: Feb 20 21:57 CST
+"test_2_10" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Feb 20 21:57 CST

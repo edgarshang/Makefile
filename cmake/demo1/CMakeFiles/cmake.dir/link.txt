@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/cmake.dir/main.cc.o  -o cmake -rdynamic 

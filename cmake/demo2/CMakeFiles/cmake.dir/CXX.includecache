@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo2/MathFunctions.cc
+stdio.h
+-
+stdlib.h
+-
+
+/home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo2/MathFunctions.h
+
+/home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo2/main.cc
+stdio.h
+-
+stdlib.h
+-
+MathFunctions.h
+/home/SENSETIME/shangzhiqiang/edgarGit/Makefile/cmake/demo2/MathFunctions.h
+
